@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reels · MkU Connect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg: #0a0a0f; --surface: #13131c; --surface2: #1c1c2a; --border: #2a2a3e; --accent: #7c5cfc; --accent2: #fc5c9c; --text: #f0f0f8; --muted: #7a7a9a; --gradient: linear-gradient(135deg, #7c5cfc, #fc5c9c); }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.6; }
+    .blob { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.1; pointer-events: none; animation: drift 12s ease-in-out infinite alternate; }
+    .blob1 { width: 500px; height: 500px; background: var(--accent); top: -100px; left: -100px; }
+    .blob2 { width: 400px; height: 400px; background: var(--accent2); bottom: -80px; right: -80px; animation-delay: -5s; }
+    @keyframes drift { from { transform: translate(0,0); } to { transform: translate(30px,20px); } }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(10,10,15,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-decoration: none; }
+    .nav-center { display: flex; gap: 0.25rem; background: var(--surface); padding: 6px; border-radius: 14px; border: 1px solid var(--border); }
+    .nav-center a { color: var(--muted); font-size: 1.1rem; padding: 8px 14px; border-radius: 10px; transition: all 0.2s; display: flex; align-items: center; text-decoration: none; }
+    .nav-center a:hover { color: var(--text); background: var(--surface2); }
+    .nav-center a.active { color: var(--accent); background: var(--surface2); }
+    .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+    .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.8rem; }
+    .btn-icon { background: var(--surface); border: 1px solid var(--border); color: var(--muted); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.95rem; }
+    .logout-btn { background: var(--surface); border: 1px solid var(--accent2); color: var(--accent2); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; font-size: 0.95rem; }
+    .logout-btn:hover { background: var(--accent2); color: #fff; }
+    .page { max-width: 700px; margin: 0 auto; padding: 84px 1.5rem 2rem; animation: fadeUp 0.4s ease both; }
+    .page-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; margin-bottom: 0.4rem; }
+    .page-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 2rem; }
+    .upload-zone { border: 2px dashed var(--border); border-radius: 20px; padding: 3rem 2rem; text-align: center; margin-bottom: 2rem; cursor: pointer; transition: border-color 0.2s; }
+    .upload-zone:hover { border-color: var(--accent); }
+    .upload-icon { font-size: 2.5rem; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; }
+    .upload-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+    .upload-sub { color: var(--muted); font-size: 0.82rem; margin-bottom: 1.2rem; }
+    .upload-btn { background: var(--gradient); border: none; color: #fff; font-family: 'DM Sans', sans-serif; font-weight: 500; padding: 10px 28px; border-radius: 12px; cursor: pointer; font-size: 0.88rem; }
+    .reels-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .reel-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; cursor: pointer; transition: border-color 0.3s, transform 0.2s; position: relative; }
+    .reel-card:hover { border-color: rgba(124,92,252,0.4); transform: translateY(-3px); }
+    .reel-thumb { height: 260px; display: flex; align-items: center; justify-content: center; font-size: 3rem; position: relative; }
+    .reel-play { position: absolute; width: 48px; height: 48px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .reel-info { padding: 0.9rem 1rem; }
+    .reel-author { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+    .reel-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.65rem; }
+    .reel-name { font-size: 0.82rem; font-weight: 500; }
+    .reel-caption { color: var(--muted); font-size: 0.78rem; line-height: 1.5; margin-bottom: 0.5rem; }
+    .reel-stats { display: flex; gap: 1rem; }
+    .reel-stat { color: var(--muted); font-size: 0.75rem; display: flex; align-items: center; gap: 0.3rem; }
+    .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 1rem; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    @media (max-width: 700px) { .nav-center { display: none; } .reels-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<nav>
+  <a class="logo" href="index.html">MkU Connect</a>
+  <div class="nav-center">
+    <a href="index.html"><i class="fas fa-house"></i></a>
+    <a href="explore.html"><i class="fas fa-compass"></i></a>
+    <a href="reels.html" class="active"><i class="fas fa-film"></i></a>
+    <a href="messages.html"><i class="fas fa-paper-plane"></i></a>
+    <a href="notifications.html"><i class="fas fa-bell"></i></a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-icon"><i class="fas fa-plus"></i></button>
+    <div class="nav-avatar" id="navInitials">MM</div>
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-right-from-bracket"></i></button>
+  </div>
+</nav>
+<div class="page">
+  <div class="page-title">Reels</div>
+  <div class="page-sub">Short videos from your community</div>
+  <div class="upload-zone" onclick="document.getElementById('videoInput').click()">
+    <input type="file" id="videoInput" accept="video/*" style="display:none"/>
+    <div class="upload-icon"><i class="fas fa-film"></i></div>
+    <div class="upload-title">Share a Reel</div>
+    <div class="upload-sub">Upload a short video to share with your followers</div>
+    <button class="upload-btn">+ Upload Video</button>
+  </div>
+  <div class="section-title">Trending Reels</div>
+  <div class="reels-grid" id="reelsGrid"></div>
+</div>
+<script>
+  function logout() { 
+    localStorage.removeItem('mku_token'); 
+    window.location.href = 'login.html'; 
+  }
+
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  const mockPeople = [
+    { name: 'Ama Owusu', handle: '@ama_o', color: 'linear-gradient(135deg,#f59e0b,#ef4444)' },
+    { name: 'Kwame B.', handle: '@kwameb', color: 'linear-gradient(135deg,#10b981,#3b82f6)' },
+    { name: 'Zara K.', handle: '@zarak', color: 'linear-gradient(135deg,#8b5cf6,#ec4899)' },
+    { name: 'Nana Yaw', handle: '@nanayaw', color: 'linear-gradient(135deg,#0ea5e9,#6366f1)' },
+    { name: 'Efua M.', handle: '@efuam', color: 'linear-gradient(135deg,#f97316,#84cc16)' },
+    { name: 'Kofi A.', handle: '@kofia', color: 'linear-gradient(135deg,#ec4899,#f97316)' },
+  ];
+
+  const grid = document.getElementById('peopleGrid');
+  mockPeople.forEach(p => {
+    const ini = p.name.split(' ').map(w=>w[0]).join('').toUpperCase();
+    grid.innerHTML += `<div class="person-card"><div class="person-avatar" style="background:${p.color}">${ini}</div><div class="person-name">${p.name}</div><div class="person-handle">${p.handle}</div><button class="follow-btn" onclick="this.textContent=this.textContent==='Follow'?'Following':'Follow'">Follow</button></div>`;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notifications · MkU Connect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg: #0a0a0f; --surface: #13131c; --surface2: #1c1c2a; --border: #2a2a3e; --accent: #7c5cfc; --accent2: #fc5c9c; --text: #f0f0f8; --muted: #7a7a9a; --gradient: linear-gradient(135deg, #7c5cfc, #fc5c9c); }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.6; }
+    .blob { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.1; pointer-events: none; animation: drift 12s ease-in-out infinite alternate; }
+    .blob1 { width: 500px; height: 500px; background: var(--accent); top: -100px; left: -100px; }
+    .blob2 { width: 400px; height: 400px; background: var(--accent2); bottom: -80px; right: -80px; animation-delay: -5s; }
+    @keyframes drift { from { transform: translate(0,0); } to { transform: translate(30px,20px); } }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(10,10,15,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-decoration: none; }
+    .nav-center { display: flex; gap: 0.25rem; background: var(--surface); padding: 6px; border-radius: 14px; border: 1px solid var(--border); }
+    .nav-center a { color: var(--muted); font-size: 1.1rem; padding: 8px 14px; border-radius: 10px; transition: all 0.2s; display: flex; align-items: center; text-decoration: none; }
+    .nav-center a:hover { color: var(--text); background: var(--surface2); }
+    .nav-center a.active { color: var(--accent); background: var(--surface2); }
+    .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+    .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.8rem; }
+    .btn-icon { background: var(--surface); border: 1px solid var(--border); color: var(--muted); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.95rem; }
+    .logout-btn { background: var(--surface); border: 1px solid var(--accent2); color: var(--accent2); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; font-size: 0.95rem; }
+    .logout-btn:hover { background: var(--accent2); color: #fff; }
+    .page { max-width: 660px; margin: 0 auto; padding: 84px 1.5rem 2rem; animation: fadeUp 0.4s ease both; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .page-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; }
+    .mark-all { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.78rem; padding: 6px 14px; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+    .mark-all:hover { color: var(--text); border-color: var(--accent); }
+    .filter-tabs { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; }
+    .tab { background: var(--surface); border: 1px solid var(--border); color: var(--muted); padding: 6px 18px; border-radius: 50px; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .tab:hover, .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .section-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin: 1.5rem 0 0.75rem; }
+    .notif-item { display: flex; align-items: center; gap: 0.9rem; padding: 0.9rem 1rem; border-radius: 16px; cursor: pointer; transition: background 0.15s; position: relative; }
+    .notif-item:hover { background: var(--surface); }
+    .notif-item.unread { background: rgba(124,92,252,0.06); }
+    .notif-item.unread::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 60%; background: var(--accent); border-radius: 0 3px 3px 0; }
+    .notif-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; position: relative; }
+    .notif-icon { position: absolute; bottom: -2px; right: -2px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; border: 2px solid var(--bg); }
+    .notif-content { flex: 1; min-width: 0; }
+    .notif-text { font-size: 0.86rem; line-height: 1.5; }
+    .notif-text strong { font-weight: 600; }
+    .notif-time { color: var(--muted); font-size: 0.73rem; margin-top: 2px; }
+    .follow-btn { background: none; border: 1px solid var(--accent); color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 0.75rem; padding: 5px 14px; border-radius: 8px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .follow-btn:hover { background: var(--accent); color: #fff; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    @media (max-width: 700px) { .nav-center { display: none; } }
+  </style>
+</head>
+<body>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<nav>
+  <a class="logo" href="index.html">MkU Connect</a>
+  <div class="nav-center">
+    <a href="index.html"><i class="fas fa-house"></i></a>
+    <a href="explore.html"><i class="fas fa-compass"></i></a>
+    <a href="reels.html"><i class="fas fa-film"></i></a>
+    <a href="messages.html"><i class="fas fa-paper-plane"></i></a>
+    <a href="notifications.html" class="active"><i class="fas fa-bell"></i></a>
+  </div>
+  <div class="nav-right">
+    <button class="btn-icon"><i class="fas fa-plus"></i></button>
+    <div class="nav-avatar" id="navInitials">MM</div>
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-right-from-bracket"></i></button>
+  </div>
+</nav>
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">Notifications</div>
+    <button class="mark-all" onclick="markAllRead()">Mark all read</button>
+  </div>
+  <div class="filter-tabs">
+    <button class="tab active" onclick="filterTab(this,'all')">All</button>
+    <button class="tab" onclick="filterTab(this,'likes')">❤️ Likes</button>
+    <button class="tab" onclick="filterTab(this,'comments')">💬 Comments</button>
+    <button class="tab" onclick="filterTab(this,'follows')">👤 Follows</button>
+  </div>
+  <div id="notifContainer"></div>
+</div>
+<script>
+  function logout() { localStorage.removeItem('mku_token'); window.location.href = 'login.html'; }
+
+  const API = 'http://127.0.0.1:8080';
+  const token = localStorage.getItem('mku_token');
+
+  async function loadNotifications() {
+    const container = document.getElementById('notifContainer');
+    container.innerHTML = '<div style="color:var(--muted);text-align:center;padding:3rem">Loading…</div>';
+    try {
+      const res = await fetch(`${API}/notifications`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      container.innerHTML = '';
+      if (!data.length) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:4rem 2rem;color:var(--muted)">
+            <div style="font-size:2.5rem;margin-bottom:1rem">🔔</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.5rem">No notifications yet</div>
+            <div style="font-size:0.85rem">When someone likes or follows you, it'll show here</div>
+          </div>`;
+        return;
+      }
+      data.forEach(n => {
+        const ini = (n.from_name||'U').split(' ').map(w=>w[0]).join('').toUpperCase();
+        container.innerHTML += `
+          <div class="notif-item ${n.is_read?'':'unread'}">
+            <div class="notif-avatar" style="background:var(--gradient)">${ini}
+              <div class="notif-icon" style="background:${n.type==='like'?'#ef4444':n.type==='follow'?'#7c5cfc':'#3b82f6'}">
+                <i class="fas ${n.type==='like'?'fa-heart':n.type==='follow'?'fa-user-plus':'fa-comment'}" style="color:#fff"></i>
+              </div>
+            </div>
+            <div class="notif-content">
+              <div class="notif-text"><strong>${n.from_name}</strong> ${n.message}</div>
+              <div class="notif-time">${n.created_at}</div>
+            </div>
+          </div>`;
+      });
+    } catch(e) {
+      container.innerHTML = `
+        <div style="text-align:center;padding:4rem 2rem;color:var(--muted)">
+          <div style="font-size:2.5rem;margin-bottom:1rem">🔔</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.5rem">No notifications yet</div>
+          <div style="font-size:0.85rem">When someone likes or follows you, it'll show here</div>
+        </div>`;
+    }
+  }
+
+  function filterTab(btn, type) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    loadNotifications();
+  }
+
+  function markAllRead() { loadNotifications(); }
+
+  loadNotifications();
+</script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MkU Connect — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131c;
+      --surface2: #1c1c2a;
+      --border: #2a2a3e;
+      --accent: #7c5cfc;
+      --accent2: #fc5c9c;
+      --text: #f0f0f8;
+      --muted: #7a7a9a;
+      --gradient: linear-gradient(135deg, #7c5cfc, #fc5c9c);
+      --glow: 0 0 40px rgba(124,92,252,0.25);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .blob {
+      position: fixed; border-radius: 50%;
+      filter: blur(90px); opacity: 0.13;
+      pointer-events: none;
+      animation: drift 10s ease-in-out infinite alternate;
+    }
+    .blob1 { width: 500px; height: 500px; background: #7c5cfc; top: -150px; left: -150px; }
+    .blob2 { width: 400px; height: 400px; background: #fc5c9c; bottom: -100px; right: -100px; animation-delay: -4s; }
+    @keyframes drift {
+      from { transform: translate(0,0); }
+      to   { transform: translate(25px,20px); }
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: 0.5;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      z-index: 10;
+      animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
+      box-shadow: var(--glow);
+    }
+
+    @keyframes slideUp {
+      from { opacity:0; transform:translateY(30px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.8rem;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center; margin-bottom: 0.3rem;
+    }
+
+    .tagline { text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 2rem; }
+
+    .form-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.3rem; margin-bottom: 1.5rem; }
+
+    .field { margin-bottom: 1rem; }
+
+    label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.4rem; font-weight: 500; }
+
+    input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.8rem 1rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,92,252,0.15); }
+    input::placeholder { color: var(--muted); }
+
+    .btn {
+      width: 100%; padding: 0.9rem; border: none;
+      border-radius: 12px; background: var(--gradient);
+      color: #fff; font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 0.95rem;
+      cursor: pointer; margin-top: 0.5rem;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .divider {
+      display: flex; align-items: center; gap: 1rem;
+      margin: 1.25rem 0; color: var(--muted); font-size: 0.8rem;
+    }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .switch { text-align: center; color: var(--muted); font-size: 0.85rem; }
+    .switch a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .switch a:hover { text-decoration: underline; }
+
+    .alert {
+      padding: 0.75rem 1rem; border-radius: 10px;
+      font-size: 0.83rem; margin-bottom: 1rem; display: none;
+    }
+    .alert.error { background: rgba(252,92,156,0.12); border: 1px solid rgba(252,92,156,0.3); color: #fc5c9c; }
+    .alert.success { background: rgba(92,240,252,0.1); border: 1px solid rgba(92,240,252,0.3); color: #5cf0fc; }
+    .alert.show { display: block; }
+
+    .spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+
+<div class="card">
+  <div class="logo">MkU Connect</div>
+  <div class="tagline">Connect. Share. Belong.</div>
+  <div class="form-title">Welcome back</div>
+
+  <div class="alert error" id="errorMsg"></div>
+  <div class="alert success" id="successMsg"></div>
+
+  <div class="field">
+    <label>Username</label>
+    <input type="text" id="username" placeholder="Enter your username" autocomplete="username"/>
+  </div>
+
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password"/>
+  </div>
+
+  <button class="btn" id="loginBtn" onclick="handleLogin()">Log In</button>
+
+  <div class="divider">or</div>
+
+  <div class="switch">
+    Don't have an account? <a href="register.html">Sign up</a>
+  </div>
+</div>
+
+<script>
+  const API = 'http://127.0.0.1:8080';
+
+  // Redirect if already logged in
+  if (localStorage.getItem('mku_token')) {
+    window.location.href = 'index.html';
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg; el.classList.add('show');
+    document.getElementById('successMsg').classList.remove('show');
+  }
+
+  function showSuccess(msg) {
+    const el = document.getElementById('successMsg');
+    el.textContent = msg; el.classList.add('show');
+    document.getElementById('errorMsg').classList.remove('show');
+  }
+
+  function setLoading(on) {
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = on;
+    btn.innerHTML = on ? '<span class="spinner"></span>Logging in…' : 'Log In';
+  }
+
+  async function handleLogin() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+      showError('Please fill in all fields.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${API}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError(data.detail || 'Invalid username or password.');
+        return;
+      }
+
+      localStorage.setItem('mku_token', data.access_token);
+      localStorage.setItem('mku_user', JSON.stringify({ username }));
+
+      showSuccess('Login successful! Redirecting…');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+
+    } catch (err) {
+      showError('Cannot reach server. Make sure your backend is running on port 8080.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleLogin();
+  });
+</script>
+</body>
+</html>
